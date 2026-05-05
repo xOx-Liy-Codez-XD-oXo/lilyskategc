@@ -83,8 +83,13 @@ int main(int argc, char **argv) {
 	PlayOgg(title_ogg, title_ogg_size, 0, OGG_INFINITE_TIME);
 
 	while(1) {
-		PAD_ScanPads();
-		int paddown = PAD_ButtonsDown(0);
+		u32 connected = PAD_ScanPads();
+		u32 whichcon; //use first connected controler
+		if(connected & 1) whichcon = 0; 
+		else if (connected & 2) whichcon = 1;
+		else if (connected & 4) whichcon = 2;
+		else if (connected & 8) whichcon = 3;
+		int paddown = PAD_ButtonsDown(whichcon);
 		if(paddown & PAD_BUTTON_START && !ontitlecard) shouldquit = 1;
 		if(paddown & PAD_TRIGGER_R) flip |= 1;
 		if((paddown & PAD_BUTTON_A) && allowStart) {
